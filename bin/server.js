@@ -4,7 +4,7 @@ const dbConnect = require('../model/mongoDb')
 const { createDirIfIsNotExist } = require('../utils/createDir')
 const { DIRS } = require('../utils/constants')
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5001
 
 const serverInit = async() => {
   await createDirIfIsNotExist(DIRS.upload)
