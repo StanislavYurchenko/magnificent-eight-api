@@ -1,5 +1,4 @@
 const path = require('path')
-
 const SUBSCRIPTIONS_TYPE = {
   free: 'free',
   pro: 'pro',
