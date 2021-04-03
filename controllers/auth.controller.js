@@ -1,21 +1,21 @@
-const jwt = require('jsonwebtoken')
-const dotenv = require('dotenv')
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
-const usersModel = require('../model/users')
-const { createResponse } = require('../utils/createResponse')
-const { HTTP_CODE } = require('../utils/constants')
+const usersModel = require('../model/users');
+const { createResponse } = require('../utils/createResponse');
+const { HTTP_CODE } = require('../utils/constants');
 
-dotenv.config()
-const { JWT_SECRET } = process.env
+dotenv.config();
+const { JWT_SECRET } = process.env;
 
 const register = async (req, res) => {
-  const { body } = req
-  const { data: user, error: errorReg } = await usersModel.register(body)
+  const { body } = req;
+  const { data: user, error: errorReg } = await usersModel.register(body);
 
-  const code = user ? HTTP_CODE.CREATED : HTTP_CODE.CONFLICT
+  const code = user ? HTTP_CODE.CREATED : HTTP_CODE.CONFLICT;
 
   if (errorReg) {
-    return createResponse(res, user, errorReg, code)
+    return createResponse(res, user, errorReg, code);
   }
 
   const newUser = user
@@ -24,24 +24,24 @@ const register = async (req, res) => {
         email: user.email,
         subscription: user.subscription,
       }
-    : undefined
+    : undefined;
 
-  return createResponse(res, newUser, errorReg, code)
-}
+  return createResponse(res, newUser, errorReg, code);
+};
 
 const login = async (req, res) => {
   console.log('login');
-  const { body } = req
-  const { data, error } = await usersModel.login(body)
-  const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND
+  const { body } = req;
+  const { data, error } = await usersModel.login(body);
+  const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
   if (error) {
-    return createResponse(res, data, error, code)
+    return createResponse(res, data, error, code);
   }
 
-  const payload = { _id: data._id }
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '240h' })
+  const payload = { _id: data._id };
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '240h' });
 
-  await usersModel.updateToken(data._id, token)
+  await usersModel.updateToken(data._id, token);
 
   const user = data
     ? {
@@ -50,44 +50,46 @@ const login = async (req, res) => {
         subscription: data.subscription,
         token,
       }
-    : undefined
+    : undefined;
 
-  return createResponse(res, user, error, code)
-}
+  return createResponse(res, user, error, code);
+};
 
 const logout = async (req, res) => {
-  const userId = req.user.id
-  const { data, error } = await usersModel.logout(userId)
+  const userId = req.user.id;
+  const { data, error } = await usersModel.logout(userId);
 
-  const logoutResult = data && { data: { message: 'Logout success' } }
+  const logoutResult = data && { data: { message: 'Logout success' } };
 
-  return createResponse(res, logoutResult, error)
-}
+  return createResponse(res, logoutResult, error);
+};
 
 const verify = async (req, res, next) => {
   try {
-    const { data, error } = await usersModel.findByVerifyToken(req.params.token)
+    const { data, error } = await usersModel.findByVerifyToken(
+      req.params.token,
+    );
     if (data) {
-      await usersModel.updateVerifyToken(data._id, true, null)
+      await usersModel.updateVerifyToken(data._id, true, null);
 
-      const result = { message: 'Verification successful' } 
-      const code = HTTP_CODE.OK
+      const result = { message: 'Verification successful' };
+      const code = HTTP_CODE.OK;
 
-      return createResponse(res, result, error, code)
-    } 
+      return createResponse(res, result, error, code);
+    }
 
-    const result = { message: 'Link is not valid' } 
-    const code = HTTP_CODE.NOT_FOUND
+    const result = { message: 'Link is not valid' };
+    const code = HTTP_CODE.NOT_FOUND;
 
-    return createResponse(res, result, error, code)
+    return createResponse(res, result, error, code);
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 module.exports = {
   register,
   login,
   logout,
   verify,
-}
+};
