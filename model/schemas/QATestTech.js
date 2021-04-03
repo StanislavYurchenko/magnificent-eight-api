@@ -5,24 +5,25 @@ const testsSchema = new Schema(
   {
     question: {
       type: String,
-      required: true,
+      required: [true, 'Question is required'],
     },
     questionId: {
       type: Number,
-      required: true,
+      required: [true, 'QuestionID is required'],
+      unique: true,
     },
     answers: {
       type: [String],
-      required: true,
+      required: [true, 'Answers is required'],
     },
     rightAnswer: {
       type: String,
-      required: true,
+      required: [true, 'Right answer is required'],
     },
   },
   { versionKey: false, timestamps: true },
 );
 
-const QATest = model('tech', testsSchema);
+const QATestTech = model('tech-test', testsSchema);
 
-module.exports = QATest;
+module.exports = QATestTech;

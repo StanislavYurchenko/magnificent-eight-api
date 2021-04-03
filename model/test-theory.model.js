@@ -1,8 +1,8 @@
-const QATestTech = require('./schemas/QATestTech');
+const QATestTheory = require('./schemas/QATestTheory');
 
 const getAll = async () => {
   try {
-    const results = await QATestTech.find();
+    const results = await QATestTheory.find();
     return results;
   } catch (error) {
     return { error };
@@ -11,7 +11,7 @@ const getAll = async () => {
 
 const create = async body => {
   try {
-    const results = await QATestTech.create(body);
+    const results = await QATestTheory.create(body);
     return results;
   } catch (error) {
     return { error };
