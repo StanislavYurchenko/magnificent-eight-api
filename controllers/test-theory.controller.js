@@ -1,15 +1,15 @@
 const testTheoryModel = require('../model/test-theory.model');
-// const { createResponse } = require('../utils/createResponse');
 const { HTTP_CODE } = require('../utils/constants');
+const { getTwelveTests, countResult } = require('../utils/dbHandler');
 
 const getTests = async (_req, res) => {
   try {
-    const data = await testTheoryModel.getAll();
+    const allTestsList = await testTheoryModel.getAll();
 
     return res.status(HTTP_CODE.OK).json({
       status: 'success',
       code: HTTP_CODE.OK,
-      data: data,
+      data: getTwelveTests(allTestsList),
     });
   } catch (error) {
     next(error);
@@ -31,12 +31,13 @@ const createTests = async (req, res, next) => {
 
 const getResult = async (req, res) => {
   try {
-    const data = await testTechModel.getAll();
+    const allTestsList = await testTheoryModel.getAll();
+    const answers = req.body;
 
     return res.status(HTTP_CODE.OK).json({
       status: 'success',
       code: HTTP_CODE.OK,
-      data: data,
+      data: countResult(answers, allTestsList),
     });
   } catch (error) {
     next(error);
