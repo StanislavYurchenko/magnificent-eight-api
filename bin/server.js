@@ -1,6 +1,6 @@
-const app = require("../app");
+const app = require('../app');
 
-const dbConnect = require("../model/mongoDb");
+const dbConnect = require('../model/mongoDb');
 // const { createDirIfIsNotExist } = require("../utils/createDir");
 // const { DIRS } = require("../utils/constants");
 
@@ -12,7 +12,7 @@ const serverInit = async () => {
   // await createDirIfIsNotExist(DIRS.avatar);
   app.listen(PORT, () => {
     console.log(
-      `<<< Server running. Use our API on port: http://localhost:${PORT} >>>`
+      `<<< Server running. Use our API on port: http://localhost:${PORT} >>>`,
     );
   });
 };

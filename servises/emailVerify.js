@@ -1,38 +1,38 @@
 // const Mailgen = require('mailgen');
-// const emailConfig = require('../config/emailConfig.json')
-// const dotenv = require('dotenv')
+// const emailConfig = require('../config/emailConfig.json');
+// const dotenv = require('dotenv');
 
-// const nodemailer = require("nodemailer");
+// const nodemailer = require('nodemailer');
 
-// dotenv.config()
+// dotenv.config();
 
 // const {
 //   EMAIL_SERVICE_LOGIN,
 //   EMAIL_SERVICE_PASSWORD,
 //   EMAIL_SERVICE_PORT,
-//   EMAIL_SERVICE_HOST
-// } = process.env
+//   EMAIL_SERVICE_HOST,
+// } = process.env;
 
 // class EmailService {
-//   #sender = nodemailer
-//   #GenerateTemplate = Mailgen
+//   #sender = nodemailer;
+//   #GenerateTemplate = Mailgen;
 //   constructor(env) {
 //     switch (env) {
 //       case 'development':
-//         this.link = emailConfig.dev
-//         break
+//         this.link = emailConfig.dev;
+//         break;
 
 //       case 'production':
-//         this.link = emailConfig.prod
-//         break
+//         this.link = emailConfig.prod;
+//         break;
 
 //       case 'stage':
-//         this.link = emailConfig.stage
-//         break
+//         this.link = emailConfig.stage;
+//         break;
 
 //       default:
-//         this.link = emailConfig.dev
-//         break
+//         this.link = emailConfig.dev;
+//         break;
 //     }
 //   }
 
@@ -41,8 +41,8 @@
 //       theme: 'cerberus',
 //       product: {
 //         name: 'Contacts Book Eko',
-//         link: this.link
-//       }
+//         link: this.link,
+//       },
 //     });
 //     const template = {
 //       body: {
@@ -53,17 +53,18 @@
 //           button: {
 //             color: '#22BC66', // Optional action button color
 //             text: 'Confirm',
-//             link: `${this.link}/auth/verify/${verifyToken}`
+//             link: `${this.link}/auth/verify/${verifyToken}`,
 //           },
-//           outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-//         }
-//       }
-//     }
-//     return mailGenerator.generate(template)
+//           outro:
+//             "Need help, or have questions? Just reply to this email, we'd love to help.",
+//         },
+//       },
+//     };
+//     return mailGenerator.generate(template);
 //   }
 
 //   async sendEmail(verifyToken, email, name) {
-//     const emailBody = this.#createTemplate(verifyToken, name)
+//     const emailBody = this.#createTemplate(verifyToken, name);
 
 //     const transporter = this.#sender.createTransport({
 //       host: EMAIL_SERVICE_HOST,
@@ -73,15 +74,15 @@
 //         user: EMAIL_SERVICE_LOGIN, // generated ethereal user
 //         pass: EMAIL_SERVICE_PASSWORD, // generated ethereal password
 //       },
-//     })
+//     });
 
 //     await transporter.sendMail({
 //       from: EMAIL_SERVICE_LOGIN,
 //       to: email,
-//       subject: "Ferify your email ✔",
+//       subject: 'Ferify your email ✔',
 //       html: emailBody,
-//     })
-//  }
+//     });
+//   }
 // }
 
-// module.exports = EmailService
+// module.exports = EmailService;

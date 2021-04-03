@@ -29,7 +29,22 @@ const createTests = async (req, res, next) => {
   }
 };
 
+const getResult = async (req, res) => {
+  try {
+    const data = await testTechModel.getAll();
+
+    return res.status(HTTP_CODE.OK).json({
+      status: 'success',
+      code: HTTP_CODE.OK,
+      data: data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getTests,
   createTests,
+  getResult,
 };
