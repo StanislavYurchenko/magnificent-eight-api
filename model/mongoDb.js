@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-dotenv.config()
-const uri = process.env.DB_URL
+const uri = process.env.DB_URL;
+
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -10,29 +10,33 @@ const options = {
   useCreateIndex: true,
   useFindAndModify: false,
   returnOriginal: false,
-
-}
+};
 
 const dbConnect = async (callback) => {
   try {
-    mongoose.connect(uri, options)
-    const db = mongoose.connection
-    db.on('connected', () => {
-      console.log('<<< Connected to mongoDB >>>')
-      return callback()
-    })
-    db.on('disconnected', () => console.log('<<< Disconnected from mongoDB >>>'))
-    db.on('error', console.error.bind(console, 'connection error:'))
+    mongoose.connect(uri, options);
+    const db = mongoose.connection;
 
-    process.on('SIGINT', async () => {
+    db.on("connected", () => {
+      console.log("<<< Connected to mongoDB >>>");
+      return callback();
+    });
+
+    db.on("disconnected", () =>
+      console.log("<<< Disconnected from mongoDB >>>")
+    );
+
+    db.on("error", console.error.bind(console, "connection error:"));
+
+    process.on("SIGINT", async () => {
       db.close(() => {
-        console.log('Connection om MondoDb closed and app termination')
-        process.exit(1)
-      })
-    })
+        console.log("Connection om MondoDb closed and app termination");
+        process.exit(1);
+      });
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
-module.exports = dbConnect
+module.exports = dbConnect;
