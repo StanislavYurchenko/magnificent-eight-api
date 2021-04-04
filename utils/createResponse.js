@@ -7,12 +7,12 @@ const createResponse = (res, data, error, code) => {
     (!data && HTTP_CODE.NOT_FOUND) ||
     (data && HTTP_CODE.OK);
   const status = data ? 'success' : 'invalid';
-  const result = data || error,
+  const result = data || error;
 
   return res.status(codeRes).json({
     status,
     code: codeRes,
-    data: data || error
+    result
   });
 };
 
