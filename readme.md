@@ -42,15 +42,15 @@ After authorization and registration, 2 tests are available, which are offered t
 - Discord
 
 ### Team: 
-- [Artur Stahov](https://github.com/ArturStahov) - Full stack developer
-- [Inna Tishchenko](https://github.com/inna91) - Frontend developer
-- [Yulia Labutkina](https://github.com/YuliaLabutkina) - Frontend developer
-- [Volodymyr Babych](https://github.com/vovababych) - Frontend developer
-- [Andriy Krichkivskiy](https://github.com/Andriy1982) - Frontend developer
-- [Roman Voznyy](https://github.com/RomanVoznyy) - Backend developer
-- [Grygoriy Chernish](https://github.com/GrygoriyChernish) - Frontend developer
-- [Valentin Yakubovskiy](https://github.com/valentinyak) - Frontend developer
-- [Elena Panasyuk](https://github.com/elenapanasyuk) - Scrum master, Frontend developer
-- [Stanislav Yurchenko](https://github.com/StanislavYurchenko) - Team lead, Frontend developer
+- FullStackDeveloper [Artur Stahov](https://github.com/ArturStahov). Role - Developer
+- FullStackDeveloper [Inna Tishchenko](https://github.com/inna91). Role - Developer
+- FullStackDeveloper [Yulia Labutkina](https://github.com/YuliaLabutkina). Role - Developer
+- FullStackDeveloper [Volodymyr Babych](https://github.com/vovababych). Role - Developer
+- FullStackDeveloper [Andriy Krichkivskiy](https://github.com/Andriy1982). Role - Developer
+- FullStackDeveloper [Roman Voznyy](https://github.com/RomanVoznyy). Role - Developer
+- FullStackDeveloper [Grygoriy Chernish](https://github.com/GrygoriyChernish). Role - Developer
+- FullStackDeveloper [Valentin Yakubovskiy](https://github.com/valentinyak). Role - Developer
+- FullStackDeveloper [Elena Panasyuk](https://github.com/elenapanasyuk). Role - ScrumMaster, Developer
+- FullStackDeveloper [Stanislav Yurchenko](https://github.com/StanislavYurchenko). Role - TeamLead
 
 **©2021 magnificent-ten team** 
