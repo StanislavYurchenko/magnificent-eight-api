@@ -9,7 +9,8 @@ const usersSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, 'Name is require'],
+      minlength: 3,
+      required: [true, 'Input user name'],
     },
     email: {
       type: String,
@@ -65,6 +66,6 @@ usersSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('user', usersSchema);
+const User = model('user', usersSchema);
 
 module.exports = User;
