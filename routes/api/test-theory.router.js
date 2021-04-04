@@ -4,9 +4,7 @@ const controller = require('../../controllers/test-theory.controller');
 // const validate = require('../../utils/validation');
 // const guard = require('../../utils/guard');
 
-router
-  .get('/test-list', controller.getTests)
-  .post('/test-list', controller.createTests);
+router.get('/', controller.getTests).post('/', controller.createTests);
 
 router.get('/result', controller.getResult);
 
