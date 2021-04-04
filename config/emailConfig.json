@@ -1,5 +1,5 @@
 {
-  "dev": "http://localhost:5002",
-  "test": "https://....",
+  "dev": "http://localhost:5000",
+  "stage": "https://....",
   "prod": "https://...."
 }

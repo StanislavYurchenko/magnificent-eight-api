@@ -17,20 +17,31 @@ class EmailService {
   #sender = nodemailer;
   #GenerateTemplate = Mailgen;
   constructor(env) {
-    this.link =
-      env === 'test'
-        ? emailConfig.test
-        : env === 'production'
-        ? emailConfig.prod
-        : emailConfig.dev;
+    switch (env) {
+      case 'development':
+        this.link = emailConfig.dev;
+        break;
+
+      case 'production':
+        this.link = emailConfig.prod;
+        break;
+
+      case 'stage':
+        this.link = emailConfig.stage;
+        break;
+
+      default:
+        this.link = emailConfig.dev;
+        break;
+    }
   }
 
-  #createTemplate(verifyToken, link, name = 'Guest') {
+  #createTemplate(verifyToken, name = 'Guest') {
     const mailGenerator = new this.#GenerateTemplate({
       theme: 'cerberus',
       product: {
         name: 'Contacts Book Eko',
-        link,
+        link: this.link,
       },
     });
     const template = {
@@ -42,7 +53,7 @@ class EmailService {
           button: {
             color: '#22BC66', // Optional action button color
             text: 'Confirm',
-            link: `${link}/auth/verify/${verifyToken}`,
+            link: `${this.link}/auth/verify/${verifyToken}`,
           },
           outro:
             "Need help, or have questions? Just reply to this email, we'd love to help.",
@@ -53,7 +64,7 @@ class EmailService {
   }
 
   async sendEmail(verifyToken, email, name) {
-    const emailBody = this.#createTemplate(verifyToken, this.link, name);
+    const emailBody = this.#createTemplate(verifyToken, name);
 
     const transporter = this.#sender.createTransport({
       host: EMAIL_SERVICE_HOST,

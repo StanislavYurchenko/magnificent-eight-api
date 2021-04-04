@@ -48,6 +48,7 @@ const newUser = (req, _res, next) => {
   const schema = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
+    name: Joi.string().required(),
     subscription: Joi.string()
       .valid(...Object.values(SUBSCRIPTIONS_TYPE))
       .default(SUBSCRIPTIONS_TYPE.free),
@@ -72,6 +73,7 @@ const newUser = (req, _res, next) => {
 const updateUser = (req, _res, next) => {
   const { body } = req;
   const schema = Joi.object({
+    name: Joi.string(),
     email: Joi.string().email(),
     subscription: Joi.string().valid(...Object.values(SUBSCRIPTIONS_TYPE)),
     password: Joi.string(),

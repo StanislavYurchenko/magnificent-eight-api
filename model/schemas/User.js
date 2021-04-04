@@ -25,6 +25,7 @@ const usersSchema = new Schema(
       type: String,
       required: [true, 'Password is require'],
     },
+
     subscription: {
       type: String,
       enum: {

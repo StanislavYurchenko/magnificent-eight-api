@@ -3,9 +3,15 @@ const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 
+<<<<<<< HEAD
 const authRouter = require('./routes/api/auth.router');
 const usersRouter = require('./routes/api/users.router');
 const imagesRouter = require('./routes/api/images.router');
+=======
+const authRouter = require('./routes/api/auth.router')
+const usersRouter = require('./routes/api/users.router')
+const imagesRouter = require('./routes/api/images.router')
+>>>>>>> 01b1719562b3c3e25752cfc4ddd2ff1e2e8da66d
 const testTechRouter = require('./routes/api/test-tech.router');
 const testTheoryRouter = require('./routes/api/test-theory.router');
 
