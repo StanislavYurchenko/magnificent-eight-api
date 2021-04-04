@@ -12,7 +12,7 @@ const createResponse = (res, data, error, code) => {
   return res.status(codeRes).json({
     status,
     code: codeRes,
-    result
+    data: data || error
   });
 };
 
