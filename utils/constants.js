@@ -1,15 +1,9 @@
 const path = require('path');
+
 const SUBSCRIPTIONS_TYPE = {
   free: 'free',
   pro: 'pro',
   premium: 'premium',
-};
-
-const DOCUMENT_FILES = {
-  name: 'name',
-  pro: 'pro',
-  premium: 'premium',
-  _id: '_id',
 };
 
 const SALT_FACTOR = 8;
@@ -38,7 +32,6 @@ module.exports = {
   SUBSCRIPTIONS_TYPE,
   SALT_FACTOR,
   HTTP_CODE,
-  DOCUMENT_FILES,
   DIRS,
   MAX_UPLOAD_FILE_SIZE,
 };

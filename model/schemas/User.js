@@ -7,6 +7,11 @@ const { SUBSCRIPTIONS_TYPE, SALT_FACTOR } = require('../../utils/constants');
 
 const usersSchema = new Schema(
   {
+    name: {
+      type: String,
+      minlength: 3,
+      required: [true, 'Input user name'],
+    },
     email: {
       type: String,
       required: [true, 'Email is require'],
@@ -60,6 +65,6 @@ usersSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('user', usersSchema);
+const User = model('user', usersSchema);
 
 module.exports = User;

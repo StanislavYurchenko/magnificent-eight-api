@@ -5,7 +5,7 @@ const guard = require('../../utils/guard');
 
 const router = express.Router();
 
-router.post('/register', validate.auth, validate.newUser, controller.register);
+router.post('/register', validate.newUser, controller.register);
 
 router.post('/login', validate.auth, controller.login);
 
