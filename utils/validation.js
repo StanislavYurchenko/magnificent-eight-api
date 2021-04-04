@@ -47,7 +47,7 @@ const newUser = (req, _res, next) => {
   const { body } = req;
   const schema = Joi.object({
     name: Joi.string().required(),
-    email: Joi.string().email({ minDomainSegments: 3, tlds: { allow: ['com', 'net', 'ru'] } }).required(),
+    email: Joi.string().email().required(),
     name: Joi.string().required(),
     subscription: Joi.string()
       .valid(...Object.values(SUBSCRIPTIONS_TYPE))

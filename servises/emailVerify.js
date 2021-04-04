@@ -65,30 +65,24 @@ class EmailService {
 
   async sendEmail(verifyToken, email, name) {
 
-    try {
+    const emailBody = this.#createTemplate(verifyToken, name);
 
-      const emailBody = this.#createTemplate(verifyToken, name);
+    const transporter = this.#sender.createTransport({
+      host: EMAIL_SERVICE_HOST,
+      port: EMAIL_SERVICE_PORT,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: EMAIL_SERVICE_LOGIN, // generated ethereal user
+        pass: EMAIL_SERVICE_PASSWORD, // generated ethereal password
+      },
+    });
 
-      const transporter = this.#sender.createTransport({
-        host: EMAIL_SERVICE_HOST,
-        port: EMAIL_SERVICE_PORT,
-        secure: true, // true for 465, false for other ports
-        auth: {
-          user: EMAIL_SERVICE_LOGIN, // generated ethereal user
-          pass: EMAIL_SERVICE_PASSWORD, // generated ethereal password
-        },
-      });
-
-      await transporter.sendMail({
-        from: EMAIL_SERVICE_LOGIN,
-        to: email,
-        subject: 'Ferify your email ✔',
-        html: emailBody,
-      });
-
-    } catch (error) {
-      console.log(error)
-    }
+    await transporter.sendMail({
+      from: EMAIL_SERVICE_LOGIN,
+      to: email,
+      subject: 'Ferify your email ✔',
+      html: emailBody,
+    });
   }
 }
 
