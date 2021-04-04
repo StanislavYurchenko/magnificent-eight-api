@@ -23,7 +23,7 @@ class EmailService {
         break;
 
       case 'production':
-        this.link = emailConfig.prod;
+        this.link = process.env.API_URL;
         break;
 
       case 'stage':
