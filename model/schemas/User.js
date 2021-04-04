@@ -7,6 +7,10 @@ const { SUBSCRIPTIONS_TYPE, SALT_FACTOR } = require('../../utils/constants');
 
 const usersSchema = new Schema(
   {
+    name: {
+      type: String,
+      required: [true, 'Name is require'],
+    },
     email: {
       type: String,
       required: [true, 'Email is require'],
@@ -20,6 +24,7 @@ const usersSchema = new Schema(
       type: String,
       required: [true, 'Password is require'],
     },
+
     subscription: {
       type: String,
       enum: {

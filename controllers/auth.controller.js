@@ -20,10 +20,11 @@ const register = async (req, res) => {
 
   const newUser = user
     ? {
-        _id: user._id,
-        email: user.email,
-        subscription: user.subscription,
-      }
+      name: user.name,
+      _id: user._id,
+      email: user.email,
+      subscription: user.subscription,
+    }
     : undefined;
 
   return createResponse(res, newUser, errorReg, code);
@@ -45,11 +46,11 @@ const login = async (req, res) => {
 
   const user = data
     ? {
-        _id: data._id,
-        email: data.email,
-        subscription: data.subscription,
-        token,
-      }
+      _id: data._id,
+      email: data.email,
+      subscription: data.subscription,
+      token,
+    }
     : undefined;
 
   return createResponse(res, user, error, code);

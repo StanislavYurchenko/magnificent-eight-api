@@ -4,7 +4,7 @@ const { HTTP_CODE } = require('./constants');
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 1000,
   handler: (_req, _res, next) => {
     try {
       const error = new Error();
@@ -20,7 +20,7 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 1000,
   handler: (_req, _res, next) => {
     try {
       const error = new Error();
