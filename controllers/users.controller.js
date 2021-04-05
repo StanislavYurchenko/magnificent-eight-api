@@ -9,10 +9,9 @@ const getCurrentUser = async (req, res) => {
   const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
   const user = data
     ? {
-        _id: data._id,
-        email: data.email,
-        subscription: data.subscription,
-      }
+      name: data.name,
+      email: data.email,
+    }
     : undefined;
 
   return createResponse(res, user, error, code);
@@ -26,10 +25,10 @@ const updateUser = async (req, res) => {
   const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
   const user = data
     ? {
-        _id: data._id,
-        email: data.email,
-        subscription: data.subscription,
-      }
+      _id: data._id,
+      email: data.email,
+      subscription: data.subscription,
+    }
     : undefined;
 
   return createResponse(res, user, error, code);
