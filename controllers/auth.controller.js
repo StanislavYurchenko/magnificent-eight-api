@@ -21,7 +21,6 @@ const register = async (req, res) => {
   const newUser = user
     ? {
       name: user.name,
-      email: user.email,
     }
     : undefined;
 
@@ -45,7 +44,6 @@ const login = async (req, res) => {
   const user = data
     ? {
       name: data.name,
-      email: data.email,
       token,
     }
     : undefined;
