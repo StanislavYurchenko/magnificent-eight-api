@@ -3,15 +3,20 @@
   "info": {
     "title": "QA Test Service",
     "description": "This is a server descriptions for QA Test Application by Magnificent Team",
-    "version": "1.0.0"
+    "version": "1.0.2"
   },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "servers": [
     {
       "url": "https://qa-test-api-hakaton2021goit.herokuapp.com",
       "description": "Base URL"
+    },
+    {
+      "url": "http://localhost:5002",
+      "description": "Test URL"
     }
   ],
-
   "tags": [
     {
       "name": "User"
@@ -25,12 +30,11 @@
       "post": {
         "tags": ["User"],
         "summary": "Create user",
-        "operationId": "registerUser",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/RegisterUser"
               }
             }
           },
@@ -56,22 +60,11 @@
       "post": {
         "tags": ["User"],
         "summary": "Logs user into the system",
-        "description": "",
-        "operationId": "loginUser",
-        "produces": ["application/json"],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/LoginUser"
               }
             }
           },
@@ -92,7 +85,7 @@
         "tags": ["User"],
         "summary": "Logs out current logged in user session",
         "description": "This can only be done by the logged in user.",
-        "operationId": "logoutUser",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -122,7 +115,7 @@
         "tags": ["Test"],
         "summary": "Get the new series of technical tests",
         "description": "This can only be done by the logged in user.",
-        "operationId": "getTheoryTests",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -136,7 +129,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Tests received"
+            "description": "Tests received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestsResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden. User is not logged in"
@@ -152,7 +152,7 @@
         "tags": ["Test"],
         "summary": "Get the new series of theoretical tests",
         "description": "This can only be done by the logged in user.",
-        "operationId": "getTechTests",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -166,7 +166,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Tests received"
+            "description": "Tests received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestsResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden. User is not logged in"
@@ -178,11 +185,11 @@
       }
     },
     "/api/test-tech/result": {
-      "get": {
+      "post": {
         "tags": ["Test"],
         "summary": "Get correct answers for technical tests",
         "description": "This can only be done by the logged in user.",
-        "operationId": "getTechTestsResult",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -194,9 +201,26 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestForAnswers"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "Result received"
+            "description": "Result received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultsResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden. User is not logged in"
@@ -208,11 +232,11 @@
       }
     },
     "/api/test-theory/result": {
-      "get": {
+      "post": {
         "tags": ["Test"],
         "summary": "Get correct answers for theoretical tests",
         "description": "This can only be done by the logged in user.",
-        "operationId": "getTheoryTestsResult",
+        "security": [{ "Bearer": [] }],
         "parameters": [
           {
             "name": "Authorization",
@@ -224,9 +248,26 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestForAnswers"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "Result received"
+            "description": "Result received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultsResponse"
+                }
+              }
+            }
           },
           "403": {
             "description": "Forbidden. User is not logged in"
@@ -240,8 +281,9 @@
   },
   "components": {
     "schemas": {
-      "User": {
+      "RegisterUser": {
         "type": "object",
+        "required": ["name", "email", "password"],
         "properties": {
           "name": {
             "type": "string"
@@ -253,7 +295,27 @@
             "type": "string"
           }
         },
-        "example": "{ 'name': 'Ivan Ivanov', 'email': 'ivanov@mail.com', 'password': 'examplepassword' }"
+        "example": {
+          "name": "Ivan Ivanov",
+          "email": "iivanov@mail.com",
+          "password": "examplepassword"
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "email": "iivanov@mail.com",
+          "password": "examplepassword"
+        }
       },
       "Test": {
         "type": "object",
@@ -268,12 +330,92 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "example": "['apple', 'orange', 'banana']"
           },
           "rightAnswer": {
             "type": "string"
           }
         }
+      },
+      "TestsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "integer"
+            },
+            "question": {
+              "type": "string"
+            },
+            "answers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "questionId": 1,
+            "question": "Choose citrus fruit",
+            "answers": "['apple', 'orange', 'banana']"
+          },
+          {
+            "questionId": 2,
+            "question": "What number is bigger",
+            "answers": "['1', '2', '3']"
+          }
+        ]
+      },
+      "RequestForAnswers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["questionId", "answer"],
+          "properties": {
+            "questionId": {
+              "type": "integer"
+            },
+            "answer": {
+              "type": "string"
+            }
+          }
+        },
+        "example": [
+          {
+            "questionId": 1,
+            "answer": "orange"
+          },
+          {
+            "questionId": 2,
+            "answer": "2"
+          }
+        ]
+      },
+      "ResultsResponse": {
+        "type": "object",
+        "properties": {
+          "correct": {
+            "type": "integer"
+          },
+          "wrong": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "correct": 10,
+          "wrong": 2
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

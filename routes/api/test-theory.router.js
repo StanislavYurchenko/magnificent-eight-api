@@ -8,6 +8,6 @@ router
   .get('/', guard, controller.getTests)
   .post('/', guard, controller.createTests);
 
-router.get('/result', guard, validate.checkResults, controller.getResult);
+router.post('/result', guard, validate.checkResults, controller.getResult);
 
 module.exports = router;
