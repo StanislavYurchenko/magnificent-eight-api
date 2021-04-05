@@ -51,6 +51,7 @@ class EmailService {
   }
 
   async sendEmail(verifyToken, email, name) {
+
     const emailBody = this.#createTemplate(verifyToken, name);
 
     const transporter = this.#sender.createTransport({
