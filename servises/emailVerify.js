@@ -1,10 +1,8 @@
 const Mailgen = require('mailgen');
 const emailConfig = require('../config/emailConfig.json');
-const dotenv = require('dotenv');
+require('dotenv').config();
 
 const nodemailer = require('nodemailer');
-
-dotenv.config();
 
 const {
   EMAIL_SERVICE_LOGIN,
@@ -17,39 +15,28 @@ class EmailService {
   #sender = nodemailer;
   #GenerateTemplate = Mailgen;
   constructor(env) {
-    switch (env) {
-      case 'development':
-        this.link = emailConfig.dev;
-        break;
-
-      case 'production':
-        this.link = process.env.API_URL;
-        break;
-
-      case 'stage':
-        this.link = emailConfig.stage;
-        break;
-
-      default:
-        this.link = emailConfig.dev;
-        break;
-    }
+    this.link =
+      env === 'test'
+        ? emailConfig.test
+        : env === 'production'
+        ? process.env.API_URL
+        : emailConfig.dev;
   }
 
   #createTemplate(verifyToken, name = 'Guest') {
     const mailGenerator = new this.#GenerateTemplate({
       theme: 'cerberus',
       product: {
-        name: 'Contacts Book Eko',
+        name: 'QA Test Service',
         link: this.link,
       },
     });
     const template = {
       body: {
         name,
-        intro: 'Welcome to Contacts Book Eko',
+        intro: 'Welcome to QA Test Service',
         action: {
-          instructions: 'For confirm your account click here:',
+          instructions: 'To confirm your account click here:',
           button: {
             color: '#22BC66', // Optional action button color
             text: 'Confirm',

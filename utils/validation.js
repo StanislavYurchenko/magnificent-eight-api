@@ -23,9 +23,6 @@ const auth = (req, _res, next) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    subscription: Joi.string()
-      .valid(...Object.values(SUBSCRIPTIONS_TYPE))
-      .default(SUBSCRIPTIONS_TYPE.free),
   });
   const validationResult = schema.validate(body);
 
@@ -48,11 +45,10 @@ const newUser = (req, _res, next) => {
   const schema = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
-    name: Joi.string().required(),
+    password: Joi.string().required(),
     subscription: Joi.string()
       .valid(...Object.values(SUBSCRIPTIONS_TYPE))
       .default(SUBSCRIPTIONS_TYPE.free),
-    password: Joi.string().required(),
   });
   const validationResult = schema.validate(body);
 
@@ -109,10 +105,37 @@ const uploadImage = (req, res, next) => {
   next();
 };
 
+const checkResults = (req, _res, next) => {
+  const { body } = req;
+  const schema = Joi.array()
+    .items(
+      Joi.object({
+        questionId: Joi.number().required(),
+        answer: Joi.alternatives().try(Joi.string(), null).required(),
+      }),
+    )
+    .required();
+  const validationResult = schema.validate(body);
+
+  try {
+    if (validationResult.error) {
+      const error = new Error();
+      error.message = validationResult.error.message;
+      error.code = HTTP_CODE.BAD_CONTENT;
+      throw error;
+    }
+  } catch (error) {
+    next(error);
+  }
+
+  next();
+};
+
 module.exports = {
   id,
   auth,
   newUser,
   updateUser,
   uploadImage,
+  checkResults,
 };

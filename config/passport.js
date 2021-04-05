@@ -15,7 +15,6 @@ const params = {
 
 passport.use(
   new Strategy(params, async (payload, done) => {
-    console.log('Hello - 1');
     try {
       const id = payload._id;
       const { data } = await userModel.findUserById(id);
