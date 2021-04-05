@@ -2,6 +2,8 @@ const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const authRouter = require('./routes/api/auth.router');
 const usersRouter = require('./routes/api/users.router');
@@ -27,11 +29,13 @@ app.use('/api', apiLimiter);
 app.use('/auth/register', authLimiter);
 app.use('/images', apiLimiter);
 
-app.use('/api/test-tech', testTechRouter);
-app.use('/api/test-theory', testTheoryRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/images', imagesRouter);
+app.use('/api/test-tech', testTechRouter);
+app.use('/api/test-theory', testTheoryRouter);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res) => {
   res

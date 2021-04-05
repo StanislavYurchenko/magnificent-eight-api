@@ -1,0 +1,280 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "QA Test Service",
+    "description": "This is a server descriptions for QA Test Application by Magnificent Team",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://qa-test-api-hakaton2021goit.herokuapp.com",
+      "description": "Base URL"
+    }
+  ],
+
+  "tags": [
+    {
+      "name": "User"
+    },
+    {
+      "name": "Test"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create user",
+        "operationId": "registerUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Conflict. User with such email is already exist"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logs user into the system",
+        "description": "",
+        "operationId": "loginUser",
+        "produces": ["application/json"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User is logged in"
+          },
+          "400": {
+            "description": "Invalid email / password supplied"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logs out current logged in user session",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "logoutUser",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is logged out"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-tech": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Get the new series of technical tests",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "getTheoryTests",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tests received"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-theory": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Get the new series of theoretical tests",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "getTechTests",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tests received"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-tech/result": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Get correct answers for technical tests",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "getTechTestsResult",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result received"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-theory/result": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Get correct answers for theoretical tests",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "getTheoryTestsResult",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result received"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": "{ 'name': 'Ivan Ivanov', 'email': 'ivanov@mail.com', 'password': 'examplepassword' }"
+      },
+      "Test": {
+        "type": "object",
+        "properties": {
+          "questionId": {
+            "type": "integer"
+          },
+          "question": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rightAnswer": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
