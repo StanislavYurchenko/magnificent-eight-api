@@ -1,5 +1,5 @@
 {
   "dev": "http://localhost:5002",
   "test": "https://qa-test-api-hakaton2021goit.herokuapp.com",
-  "prod": ""
+  "prod": "https://qa-test-api-hakaton2021goit.herokuapp.com"
 }

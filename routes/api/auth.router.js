@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../../controllers/auth.controller');
+const googleContoller = require('../../controllers/auth.google.controller');
 const validate = require('../../utils/validation');
 const guard = require('../../utils/guard');
 
@@ -12,5 +13,11 @@ router.post('/login', validate.auth, controller.login);
 router.post('/logout', guard, controller.logout);
 
 router.get('/verify/:token', controller.verify);
+
+router.get('/google', googleContoller.googleAuth);
+
+router.get('/google-redirect', googleContoller.googleRedirect);
+
+router.get('/google-login', googleContoller.googleLogin);
 
 module.exports = router;

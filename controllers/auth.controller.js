@@ -18,17 +18,12 @@ const register = async (req, res) => {
     return createResponse(res, user, errorReg, code);
   }
 
-  const newUser = user
-    ? {
-      name: user.name,
-    }
-    : undefined;
+  const newUser = user ? { name: user.name } : undefined;
 
   return createResponse(res, newUser, errorReg, code);
 };
 
 const login = async (req, res) => {
-  console.log('login');
   const { body } = req;
   const { data, error } = await usersModel.login(body);
   const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
@@ -43,9 +38,9 @@ const login = async (req, res) => {
 
   const user = data
     ? {
-      name: data.name,
-      token,
-    }
+        name: data.name,
+        token,
+      }
     : undefined;
 
   return createResponse(res, user, error, code);
