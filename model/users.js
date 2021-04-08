@@ -32,13 +32,18 @@ const register = async body => {
   const { email, name } = body;
   try {
     const { data } = await findUserByEmail(email);
-    const isUserExist = Boolean(data);
-    if (isUserExist) {
+
+    if (data && !data.onlyGoogleRegister) {
       const error = new Error();
       error.code = HTTP_CODE.CONFLICT;
       error.message = `Email ${body.email} is already exist`;
       throw error;
     }
+
+    if (data?.onlyGoogleRegister) {
+      await User.findByIdAndRemove(data._id);
+    }
+
     const verifyToken = nanoid();
     const emailService = new EmailService(process.env.NODE_ENV);
     await emailService.sendEmail(verifyToken, email, name);
@@ -59,7 +64,7 @@ const login = async body => {
     if (!data || !isValidPassword || !data.verify) {
       const error = new Error();
       error.code = HTTP_CODE.NOT_FOUND;
-      error.message = data.verify
+      error.message = data?.verify
         ? 'User or password is incorrect'
         : 'Verify your email';
       throw error;

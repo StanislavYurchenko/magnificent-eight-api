@@ -52,6 +52,10 @@ const usersSchema = new Schema(
       type: String,
       require: [true, 'Verify token is require'],
     },
+    onlyGoogleRegister: {
+      type: Boolean,
+      default: false,
+    },
   },
   { versionKey: false, timestamps: true },
 );
