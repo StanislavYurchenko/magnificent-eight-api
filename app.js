@@ -29,6 +29,7 @@ app.use('/api', apiLimiter);
 app.use('/auth/register', authLimiter);
 app.use('/images', apiLimiter);
 
+app.use('/', authRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/images', imagesRouter);
