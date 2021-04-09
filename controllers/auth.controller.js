@@ -8,6 +8,14 @@ const { HTTP_CODE } = require('../utils/constants');
 dotenv.config();
 const { JWT_SECRET } = process.env;
 
+const hello = (_req, res) => {
+  return res.status(HTTP_CODE.OK).json({
+    status: 'success',
+    code: HTTP_CODE.OK,
+    message: 'Server is waiting for your request',
+  });
+};
+
 const register = async (req, res) => {
   const { body } = req;
   const { data: user, error: errorReg } = await usersModel.register(body);
@@ -83,4 +91,5 @@ module.exports = {
   login,
   logout,
   verify,
+  hello,
 };
