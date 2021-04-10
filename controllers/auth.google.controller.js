@@ -3,26 +3,29 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const emailConfig = require('../config/emailConfig.json');
 const usersModel = require('../model/users');
 const User = require('../model/schemas/User');
-const { HTTP_CODE } = require('../utils/constants');
+
 const {
   JWT_SECRET,
   NODE_ENV,
   DB_CLIENT_SECRET,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
+  API_URL,
+  API_URL_LOCAL,
+  APP_URL,
+  APP_URL_LOCAL,
 } = process.env;
 
-const BASE_URL =
-  NODE_ENV === 'development' ? emailConfig.dev : emailConfig.prod;
+const BACK_URL = NODE_ENV === 'development' ? API_URL_LOCAL : API_URL;
+const FRONT_URL = NODE_ENV === 'development' ? APP_URL_LOCAL : APP_URL;
 
 const googleAuth = async (_req, res, next) => {
   try {
     const stringifiedParams = queryString.stringify({
       client_id: GOOGLE_CLIENT_ID,
-      redirect_uri: `${BASE_URL}/auth/google-redirect`,
+      redirect_uri: `${BACK_URL}/auth/google-redirect`,
       scope: [
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile',
@@ -31,6 +34,7 @@ const googleAuth = async (_req, res, next) => {
       access_type: 'offline',
       prompt: 'consent',
     });
+
     return res.redirect(
       `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`,
     );
@@ -52,7 +56,7 @@ const googleRedirect = async (req, res, next) => {
       data: {
         client_id: GOOGLE_CLIENT_ID,
         client_secret: GOOGLE_CLIENT_SECRET,
-        redirect_uri: `${BASE_URL}/auth/google-redirect`,
+        redirect_uri: `${BACK_URL}/auth/google-redirect`,
         grant_type: 'authorization_code',
         code,
       },
@@ -68,9 +72,7 @@ const googleRedirect = async (req, res, next) => {
     const { name, email } = userData.data;
     const token = await checkRegisterAndLogin({ name, email }, next);
 
-    return res.redirect(
-      `${BASE_URL}/auth/google-login?name=${name}&token=${token}`,
-    );
+    return res.redirect(`${FRONT_URL}/google?name=${name}&token=${token}`);
   } catch (error) {
     next(error);
   }
@@ -101,17 +103,4 @@ const checkRegisterAndLogin = async (body, next) => {
   }
 };
 
-const googleLogin = (req, res, _next) => {
-  const { name, token } = req.query;
-
-  return res.status(HTTP_CODE.OK).json({
-    status: 'success',
-    code: HTTP_CODE.OK,
-    data: {
-      name,
-      token,
-    },
-  });
-};
-
-module.exports = { googleAuth, googleRedirect, googleLogin };
+module.exports = { googleAuth, googleRedirect };
