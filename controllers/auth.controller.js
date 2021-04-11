@@ -46,9 +46,10 @@ const login = async (req, res) => {
 
   const user = data
     ? {
-        name: data.name,
-        token,
-      }
+      name: data.name,
+      avatar: data.avatar,
+      token,
+    }
     : undefined;
 
   return createResponse(res, user, error, code);
