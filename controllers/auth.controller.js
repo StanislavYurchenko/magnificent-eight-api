@@ -17,6 +17,14 @@ const hello = (_req, res) => {
   );
 };
 
+const hello = (_req, res) => {
+  return res.status(HTTP_CODE.OK).json({
+    status: 'success',
+    code: HTTP_CODE.OK,
+    message: 'Server is waiting for your request',
+  });
+};
+
 const register = async (req, res) => {
   const { data, error } = await usersModel.register(req.body);
   const code = data ? HTTP_CODE.CREATED : HTTP_CODE.CONFLICT;
