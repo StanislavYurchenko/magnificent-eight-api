@@ -3,7 +3,11 @@ const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
 
 const { Schema, model } = mongoose;
-const { SUBSCRIPTIONS_TYPE, SALT_FACTOR } = require('../../utils/constants');
+const {
+  SUBSCRIPTIONS_TYPE,
+  SALT_FACTOR,
+  ROLE,
+} = require('../../utils/constants');
 
 const usersSchema = new Schema(
   {
@@ -25,7 +29,6 @@ const usersSchema = new Schema(
       type: String,
       required: [true, 'Password is require'],
     },
-
     subscription: {
       type: String,
       enum: {
@@ -34,15 +37,19 @@ const usersSchema = new Schema(
       },
       default: SUBSCRIPTIONS_TYPE.free,
     },
-    token: {
-      type: String,
-      default: null,
-    },
     avatar: {
       type: String,
       default: function () {
         return gravatar.profile_url(this.email, { s: 250 }, true);
       },
+    },
+    role: {
+      type: String,
+      enum: {
+        values: Object.values(ROLE),
+        message: 'It is not allowed',
+      },
+      default: ROLE.student,
     },
     verify: {
       type: Boolean,
@@ -51,6 +58,13 @@ const usersSchema = new Schema(
     verifyToken: {
       type: String,
       require: [true, 'Verify token is require'],
+    },
+    token: {
+      accessToken: { type: String, default: null },
+      refreshToken: {
+        type: String,
+        default: null,
+      },
     },
     onlyGoogleRegister: {
       type: Boolean,
