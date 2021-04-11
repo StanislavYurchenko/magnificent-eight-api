@@ -40,6 +40,7 @@ const login = async (req, res) => {
   });
 
   const user = {
+    avatar:data.avatar,
     name: data.name,
     role: data.role,
     token: {
@@ -95,6 +96,7 @@ const refreshToken = async (req, res, next) => {
     await usersModel.updateToken(data._id, { accessToken });
 
     const user = {
+      avatar: data.avatar,
       name: data.name,
       token: {
         accessToken,

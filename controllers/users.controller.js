@@ -11,6 +11,7 @@ const getCurrentUser = async (req, res) => {
     ? {
       name: data.name,
       email: data.email,
+      avatar: data.avatar,
     }
     : undefined;
 
