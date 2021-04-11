@@ -1,13 +1,12 @@
 const queryString = require('query-string');
 const axios = require('axios');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+const { dobleTokensCreater } = require('../utils/tokensCreater');
 const usersModel = require('../model/users');
 const User = require('../model/schemas/User');
 
 const {
-  JWT_SECRET,
   NODE_ENV,
   DB_CLIENT_SECRET,
   GOOGLE_CLIENT_ID,
@@ -70,9 +69,16 @@ const googleRedirect = async (req, res, next) => {
     });
 
     const { name, email } = userData.data;
-    const token = await checkRegisterAndLogin({ name, email }, next);
+    const {
+      role,
+      accessToken,
+      refreshToken,
+      expires_on,
+    } = await checkRegisterAndLogin({ name, email }, next);
 
-    return res.redirect(`${FRONT_URL}/google?name=${name}&token=${token}`);
+    return res.redirect(
+      `${FRONT_URL}/google?name=${name}&role=${role}&accessToken=${accessToken}&refreshToken=${refreshToken}&expires_on=${expires_on}`,
+    );
   } catch (error) {
     next(error);
   }
@@ -82,6 +88,7 @@ const checkRegisterAndLogin = async (body, next) => {
   const { name, email } = body;
   try {
     let user = await usersModel.findUserByEmail(email);
+
     if (!user.data) {
       const newUser = new User({
         name,
@@ -94,10 +101,21 @@ const checkRegisterAndLogin = async (body, next) => {
       user = await usersModel.findUserByEmail(email);
     }
 
-    const payload = { _id: user.data._id };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '240h' });
-    await usersModel.updateToken(user.data._id, token);
-    return token;
+    const { accessToken, refreshToken, expires_on } = dobleTokensCreater(
+      user.data,
+    );
+
+    await usersModel.updateToken(user.data._id, {
+      accessToken,
+      refreshToken,
+    });
+
+    return {
+      role: user.data.role,
+      accessToken,
+      refreshToken,
+      expires_on,
+    };
   } catch (error) {
     next(error);
   }

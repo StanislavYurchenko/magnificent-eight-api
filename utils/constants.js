@@ -28,10 +28,28 @@ const DIRS = {
 
 const MAX_UPLOAD_FILE_SIZE = 2 * 1024 * 1024;
 
+const ROLE = {
+  student: 'student',
+  admin: 'admin',
+};
+
+const TOKEN = {
+  ACCESS: {
+    TYPE: 'access',
+    EXPIRES_IN: '30m',
+  },
+  REFRESH: {
+    TYPE: 'refresh',
+    EXPIRES_IN: '30d',
+  },
+};
+
 module.exports = {
   SUBSCRIPTIONS_TYPE,
   SALT_FACTOR,
   HTTP_CODE,
   DIRS,
   MAX_UPLOAD_FILE_SIZE,
+  ROLE,
+  TOKEN,
 };
