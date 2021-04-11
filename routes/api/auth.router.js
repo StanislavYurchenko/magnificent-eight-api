@@ -20,4 +20,6 @@ router.get('/google', googleContoller.googleAuth);
 
 router.get('/google-redirect', googleContoller.googleRedirect);
 
+router.post('/refresh-token', controller.refreshToken);
+
 module.exports = router;

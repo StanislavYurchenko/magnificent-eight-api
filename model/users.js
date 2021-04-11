@@ -22,7 +22,9 @@ const findUserById = async id => {
 
 const updateToken = async (id, token) => {
   try {
-    return { data: await User.findByIdAndUpdate(id, { token }) };
+    return {
+      data: await User.findByIdAndUpdate(id, { token }),
+    };
   } catch (error) {
     return { error };
   }
@@ -64,9 +66,10 @@ const login = async body => {
     if (!data || !isValidPassword || !data.verify) {
       const error = new Error();
       error.code = HTTP_CODE.NOT_FOUND;
-      error.message = data?.verify
-        ? 'User or password is incorrect'
-        : 'Verify your email';
+      error.message =
+        data?.onlyGoogleRegister || data?.verify
+          ? 'User or password is incorrect'
+          : 'Verify your email';
       throw error;
     }
     return { data };
@@ -78,7 +81,7 @@ const login = async body => {
 const logout = async id => {
   try {
     const user = await User.findById(id);
-    await updateToken(id, null);
+    await updateToken(id, { accessToken: null, refreshToken: null });
     return { data: user };
   } catch (error) {
     return { error };
@@ -118,6 +121,14 @@ const updateVerifyToken = async (id, verify, verifyToken) => {
   }
 };
 
+const findUserByRefreshToken = async refreshToken => {
+  try {
+    return { data: await User.findOne({ 'token.refreshToken': refreshToken }) };
+  } catch (error) {
+    return { error };
+  }
+};
+
 module.exports = {
   findUserByEmail,
   register,
@@ -129,4 +140,5 @@ module.exports = {
   updateAvatar,
   findByVerifyToken,
   updateVerifyToken,
+  findUserByRefreshToken,
 };
