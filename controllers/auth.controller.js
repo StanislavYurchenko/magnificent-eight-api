@@ -1,87 +1,110 @@
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+require('dotenv').config();
 
 const usersModel = require('../model/users');
+const {
+  dobleTokensCreater,
+  accessTokenCreater,
+} = require('../utils/tokensCreater');
 const { createResponse } = require('../utils/createResponse');
 const { HTTP_CODE } = require('../utils/constants');
 
-dotenv.config();
-const { JWT_SECRET } = process.env;
-
 const hello = (_req, res) => {
-  return res.status(HTTP_CODE.OK).json({
-    status: 'success',
-    code: HTTP_CODE.OK,
-    message: 'Server is waiting for your request',
-  });
+  return createResponse(
+    res,
+    { message: 'Server is waiting for your request' },
+    null,
+    HTTP_CODE.OK,
+  );
 };
 
 const register = async (req, res) => {
-  const { body } = req;
-  const { data: user, error: errorReg } = await usersModel.register(body);
+  const { data, error } = await usersModel.register(req.body);
+  const code = data ? HTTP_CODE.CREATED : HTTP_CODE.CONFLICT;
 
-  const code = user ? HTTP_CODE.CREATED : HTTP_CODE.CONFLICT;
-
-  if (errorReg) {
-    return createResponse(res, user, errorReg, code);
-  }
-
-  const newUser = user ? { name: user.name } : undefined;
-
-  return createResponse(res, newUser, errorReg, code);
+  return createResponse(res, data?.name, error, code);
 };
 
 const login = async (req, res) => {
-  const { body } = req;
-  const { data, error } = await usersModel.login(body);
+  const { data, error } = await usersModel.login(req.body);
   const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
+
   if (error) {
     return createResponse(res, data, error, code);
   }
 
-  const payload = { _id: data._id };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '240h' });
+  const { accessToken, refreshToken, expires_on } = dobleTokensCreater(data);
 
-  await usersModel.updateToken(data._id, token);
+  await usersModel.updateToken(data._id, {
+    accessToken,
+    refreshToken,
+  });
 
-  const user = data
-    ? {
-        name: data.name,
-        token,
-      }
-    : undefined;
+  const user = {
+    name: data.name,
+    role: data.role,
+    token: {
+      accessToken,
+      refreshToken,
+      expires_on,
+    },
+  };
 
   return createResponse(res, user, error, code);
 };
 
 const logout = async (req, res) => {
-  const userId = req.user.id;
-  const { data, error } = await usersModel.logout(userId);
+  const { data, error } = await usersModel.logout(req.user.id);
 
   const logoutResult = data && { data: { message: 'Logout success' } };
 
   return createResponse(res, logoutResult, error);
 };
 
-const verify = async (req, res, next) => {
+const verify = async (req, res) => {
+  const { data, error } = await usersModel.findByVerifyToken(req.params.token);
+  const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
+
+  const result = data
+    ? { message: 'Verification successful' }
+    : { message: 'Link is not valid' };
+
+  if (error) {
+    return createResponse(res, data, error, code);
+  }
+
+  console.log(data);
+
+  await usersModel.updateVerifyToken(data._id, true, null);
+
+  return createResponse(res, result, error, code);
+};
+
+const refreshToken = async (req, res, next) => {
   try {
-    const { data, error } = await usersModel.findByVerifyToken(
-      req.params.token,
+    const { data, error } = await usersModel.findUserByRefreshToken(
+      req.body.refreshToken,
     );
-    if (data) {
-      await usersModel.updateVerifyToken(data._id, true, null);
 
-      const result = { message: 'Verification successful' };
-      const code = HTTP_CODE.OK;
-
-      return createResponse(res, result, error, code);
+    const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
+    if (!data || error) {
+      return createResponse(res, data, error, code);
     }
 
-    const result = { message: 'Link is not valid' };
-    const code = HTTP_CODE.NOT_FOUND;
+    const { accessToken, expires_on } = accessTokenCreater(data);
 
-    return createResponse(res, result, error, code);
+    await usersModel.updateToken(data._id, { accessToken });
+
+    const user = {
+      name: data.name,
+      token: {
+        accessToken,
+        expires_on,
+      },
+    };
+
+    return createResponse(res, user, error, code);
   } catch (error) {
+    console.log('controller');
     next(error);
   }
 };
@@ -92,4 +115,5 @@ module.exports = {
   logout,
   verify,
   hello,
+  refreshToken,
 };

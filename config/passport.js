@@ -25,9 +25,11 @@ passport.use(
         error.code = HTTP_CODE.NOT_FOUND;
         throw error;
       }
-      if (!data.token) {
+
+      if (!data.token.accessToken) {
         return done(null, false);
       }
+
       return done(null, data);
     } catch (error) {
       done(error, false);
