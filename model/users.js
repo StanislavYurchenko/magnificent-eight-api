@@ -1,6 +1,6 @@
 const { nanoid } = require('nanoid');
 const User = require('./schemas/User');
-const HTTP_CODE = require('../utils/constants');
+const { HTTP_CODE, ROLE } = require('../utils/constants');
 const EmailService = require('../servises/emailVerify');
 
 const findUserByEmail = async email => {
@@ -129,6 +129,34 @@ const findUserByRefreshToken = async refreshToken => {
   }
 };
 
+const updateAccessToken = async (id, accessToken) => {
+  try {
+    return {
+      data: await User.findByIdAndUpdate(id, {
+        'token.accessToken': accessToken,
+      }),
+    };
+  } catch (error) {
+    return { error };
+  }
+};
+
+const getAllUsers = async () => {
+  try {
+    return { data: await User.find() };
+  } catch (error) {
+    return { error };
+  }
+};
+
+const removeUser = async userId => {
+  try {
+    return { data: await User.findOneAndRemove({ _id: userId }) };
+  } catch (error) {
+    return { error };
+  }
+};
+
 module.exports = {
   findUserByEmail,
   register,
@@ -141,4 +169,7 @@ module.exports = {
   findByVerifyToken,
   updateVerifyToken,
   findUserByRefreshToken,
+  updateAccessToken,
+  getAllUsers,
+  removeUser,
 };

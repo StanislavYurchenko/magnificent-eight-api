@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../../controllers/test-tech.controller');
 const validate = require('../../utils/validation');
-const guard = require('../../utils/guard');
+const { guard } = require('../../utils/guard');
 
 router
   .get('/', guard, controller.getTests)
