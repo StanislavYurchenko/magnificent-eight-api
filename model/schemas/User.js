@@ -40,7 +40,7 @@ const usersSchema = new Schema(
     avatar: {
       type: String,
       default: function () {
-        return gravatar.profile_url(this.email, { s: 250 }, true);
+        return gravatar.url(this.email, { s: 250 }, true);
       },
     },
     role: {
