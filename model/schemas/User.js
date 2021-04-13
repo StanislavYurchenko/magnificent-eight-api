@@ -49,7 +49,7 @@ const usersSchema = new Schema(
         values: Object.values(ROLE),
         message: 'It is not allowed',
       },
-      default: ROLE.student,
+      default: ROLE.STUDENT,
     },
     verify: {
       type: Boolean,

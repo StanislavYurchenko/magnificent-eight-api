@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const usersModel = require('../model/users');
 const {
   dobleTokensCreater,
@@ -40,7 +39,7 @@ const login = async (req, res) => {
   });
 
   const user = {
-    avatar:data.avatar,
+    avatar: data.avatar,
     name: data.name,
     role: data.role,
     token: {
@@ -73,8 +72,6 @@ const verify = async (req, res) => {
     return createResponse(res, data, error, code);
   }
 
-  console.log(data);
-
   await usersModel.updateVerifyToken(data._id, true, null);
 
   return createResponse(res, result, error, code);
@@ -93,7 +90,7 @@ const refreshToken = async (req, res, next) => {
 
     const { accessToken, expires_on } = accessTokenCreater(data);
 
-    await usersModel.updateToken(data._id, { accessToken });
+    await usersModel.updateAccessToken(data._id, accessToken);
 
     const user = {
       avatar: data.avatar,
@@ -106,7 +103,6 @@ const refreshToken = async (req, res, next) => {
 
     return createResponse(res, user, error, code);
   } catch (error) {
-    console.log('controller');
     next(error);
   }
 };

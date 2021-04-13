@@ -2,7 +2,7 @@ const express = require('express');
 const controller = require('../../controllers/auth.controller');
 const googleContoller = require('../../controllers/auth.google.controller');
 const validate = require('../../utils/validation');
-const guard = require('../../utils/guard');
+const { guard } = require('../../utils/guard');
 
 const router = express.Router();
 
