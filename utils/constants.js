@@ -36,7 +36,7 @@ const ROLE = {
 const TOKEN = {
   ACCESS: {
     TYPE: 'access',
-    EXPIRES_IN: '30m',
+    EXPIRES_IN: '2m',
   },
   REFRESH: {
     TYPE: 'refresh',
