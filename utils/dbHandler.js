@@ -11,7 +11,7 @@ const getTwelveTests = testsArr => {
 
   const randomIDList = [];
   const min = 1;
-  const max = testsArr.length + 1;
+  const max = testsArr.length;
   let tempId;
 
   for (; randomIDList.length < 12; ) {

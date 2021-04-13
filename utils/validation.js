@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
-const { HTTP_CODE, SUBSCRIPTIONS_TYPE } = require('./constants');
+const { HTTP_CODE, SUBSCRIPTIONS_TYPE, ROLE } = require('./constants');
 
 const id = (req, _res, next) => {
   const { id } = req.params;
@@ -71,9 +71,12 @@ const updateUser = (req, _res, next) => {
   const schema = Joi.object({
     name: Joi.string(),
     email: Joi.string().email(),
-    subscription: Joi.string().valid(...Object.values(SUBSCRIPTIONS_TYPE)),
     password: Joi.string(),
+    subscription: Joi.string().valid(...Object.values(SUBSCRIPTIONS_TYPE)),
+    avatar: Joi.string(),
+    role: Joi.string().valid(...Object.values(ROLE)),
   });
+
   const validationResult = schema.validate(body);
 
   try {

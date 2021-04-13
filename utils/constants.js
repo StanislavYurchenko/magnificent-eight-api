@@ -29,14 +29,14 @@ const DIRS = {
 const MAX_UPLOAD_FILE_SIZE = 2 * 1024 * 1024;
 
 const ROLE = {
-  student: 'student',
-  admin: 'admin',
+  STUDENT: 'student',
+  ADMIN: 'admin',
 };
 
 const TOKEN = {
   ACCESS: {
     TYPE: 'access',
-    EXPIRES_IN: '2m',
+    EXPIRES_IN: '30m',
   },
   REFRESH: {
     TYPE: 'refresh',
