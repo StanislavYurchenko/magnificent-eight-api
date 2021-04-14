@@ -1,21 +1,33 @@
 const usersModel = require('../model/users');
-const { createResponse } = require('../utils/createResponse');
 const { HTTP_CODE, ROLE } = require('../utils/constants');
 
-const getCurrentUser = async (req, res) => {
-  const userId = req.user._id;
-  const { data, error } = await usersModel.findUserById(userId);
+const getCurrentUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { data, error } = await usersModel.findUserById(userId);
 
-  const code = data ? HTTP_CODE.OK : HTTP_CODE.NOT_FOUND;
-  const user = data
-    ? {
+    if (!data) {
+      return res.status(HTTP_CODE.NOT_FOUND).json({
+        status: 'error',
+        code: HTTP_CODE.NOT_FOUND,
+        data: { message: "Cann't found user" },
+      });
+    }
+
+    return res.status(HTTP_CODE.OK).json({
+      status: 'success',
+      code: HTTP_CODE.OK,
+      data: {
         name: data.name,
         email: data.email,
         avatar: data.avatar,
-      }
-    : undefined;
-
-  return createResponse(res, user, error, code);
+        subscription: data.subscription,
+        role: data.role,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const getAll = async (req, res, next) => {
