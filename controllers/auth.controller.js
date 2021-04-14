@@ -78,6 +78,7 @@ const verify = async (req, res) => {
 };
 
 const refreshToken = async (req, res, next) => {
+  console.log(req.body.refreshToken);
   try {
     const { data, error } = await usersModel.findUserByRefreshToken(
       req.body.refreshToken,
