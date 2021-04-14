@@ -406,7 +406,7 @@
       "get": {
         "tags": ["Admin"],
         "summary": "Get all users with role 'student'",
-        "description": "This can only be done by the logged in user and admin's role.",
+        "description": "This can only be done by the logged in user and with admin's role.",
         "security": [{ "Bearer": [] }],
         "parameters": [
           {
@@ -425,13 +425,159 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TestsResponse"
+                  "$ref": "#/components/schemas/UsersListResponse"
                 }
               }
             }
           },
           "403": {
-            "description": "Forbidden. User is not logged in"
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/all/admin": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all users with role 'admin'",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/update/:email": {
+      "patch": {
+        "tags": ["Admin"],
+        "summary": "Update role or/and subscription of user",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "subscription": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "role": "admin",
+                  "subscription": "premium"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "List of users received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "subscription": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "name": "Lyolek",
+                    "email": "lyolek@mail.com",
+                    "subscription": "premium",
+                    "role": "admin"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/delete/:email": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Remove user from DB",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was successfully deleted"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
           },
           "500": {
             "description": "Server error"
@@ -624,6 +770,65 @@
           "correct": 10,
           "wrong": 2
         }
+      },
+      "UsersListResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "subscription": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "verify": {
+              "type": "boolean"
+            },
+            "onlyGoogleRegister": {
+              "type": "boolean"
+            },
+            "avatar": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "data"
+            },
+            "updatedAt": {
+              "type": "data"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "Lyolek",
+            "email": "lyolek@mail.com",
+            "subscription": "free",
+            "role": "student",
+            "verify": true,
+            "onlyGoogleRegister": false,
+            "avatar": "https://secure.gravatar.com/3acb559eab691ad82ec5805c5d070123.json?s=250",
+            "createdAt": "2021-04-11T19:38:24.133Z",
+            "updatedAt": "2021-04-13T19:52:30.710Z"
+          },
+          {
+            "name": "Bolek",
+            "email": "bolek@mail.com",
+            "subscription": "pro",
+            "role": "student",
+            "verify": false,
+            "onlyGoogleRegister": true,
+            "avatar": "https://secure.gravatar.com/3acb559eab691ad82ec5805c5d070321.json?s=250",
+            "createdAt": "2021-04-10T19:38:24.133Z",
+            "updatedAt": "2021-04-13T19:52:30.710Z"
+          }
+        ]
       }
     },
     "securitySchemes": {
