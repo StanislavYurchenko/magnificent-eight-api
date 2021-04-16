@@ -1,4 +1,7 @@
 require('dotenv').config();
+
+const { APP_URL} = process.env;
+
 const usersModel = require('../model/users');
 const {
   dobleTokensCreater,
@@ -74,7 +77,8 @@ const verify = async (req, res) => {
 
   await usersModel.updateVerifyToken(data._id, true, null);
 
-  return createResponse(res, result, error, code);
+  // return createResponse(res, result, error, code);
+  return res.redirect(`${APP_URL}`);
 };
 
 const refreshToken = async (req, res, next) => {
