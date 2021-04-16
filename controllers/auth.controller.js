@@ -74,7 +74,6 @@ const verify = async (req, res) => {
   if (error) {
     return createResponse(res, data, error, code);
   }
-
   await usersModel.updateVerifyToken(data._id, true, null);
 
   // return createResponse(res, result, error, code);
