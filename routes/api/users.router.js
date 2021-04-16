@@ -1,12 +1,21 @@
-const express = require('express')
-const controller = require('../../controllers/users.controller')
-const validate = require('../../utils/validation')
+const express = require('express');
+const controller = require('../../controllers/users.controller');
+const validate = require('../../utils/validation');
 
-const guard = require('../../utils/guard')
+const { guard, adminGuard } = require('../../utils/guard');
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/current', guard, controller.getCurrentUser)
-router.patch('/:id', guard, validate.id, validate.updateUser, controller.updateUser)
+router.get('/current', guard, controller.getCurrentUser);
+router.get('/all/:role', adminGuard, controller.getAll);
 
-module.exports = router
+router
+  .patch(
+    '/update/:email',
+    adminGuard,
+    validate.updateUser,
+    controller.updateUser,
+  )
+  .delete('/delete/:email', adminGuard, controller.deleteUser);
+
+module.exports = router;

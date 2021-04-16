@@ -1,16 +1,25 @@
-const express = require('express')
-const controller = require('../../controllers/auth.controller')
-const validate = require('../../utils/validation')
-const guard = require('../../utils/guard')
+const express = require('express');
+const controller = require('../../controllers/auth.controller');
+const googleContoller = require('../../controllers/auth.google.controller');
+const validate = require('../../utils/validation');
+const { guard } = require('../../utils/guard');
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/register', validate.auth, validate.newUser, controller.register)
+router.get('/', controller.hello);
 
-router.post('/login', validate.auth, controller.login)
+router.post('/register', validate.newUser, controller.register);
 
-router.post('/logout', guard, controller.logout)
+router.post('/login', validate.auth, controller.login);
 
-router.get('/verify/:token', controller.verify)
+router.post('/logout', guard, controller.logout);
 
-module.exports = router
+router.get('/verify/:token', controller.verify);
+
+router.get('/google', googleContoller.googleAuth);
+
+router.get('/google-redirect', googleContoller.googleRedirect);
+
+router.post('/refresh-token', controller.refreshToken);
+
+module.exports = router;

@@ -1,71 +1,58 @@
 const Mailgen = require('mailgen');
-const emailConfig = require('../config/emailConfig.json')
-const dotenv = require('dotenv')
+const emailConfig = require('../config/emailConfig.json');
+require('dotenv').config();
 
-const nodemailer = require("nodemailer");
-
-dotenv.config()
+const nodemailer = require('nodemailer');
 
 const {
   EMAIL_SERVICE_LOGIN,
   EMAIL_SERVICE_PASSWORD,
   EMAIL_SERVICE_PORT,
-  EMAIL_SERVICE_HOST
-} = process.env
-
+  EMAIL_SERVICE_HOST,
+} = process.env;
 
 class EmailService {
-  #sender = nodemailer
-  #GenerateTemplate = Mailgen
+  #sender = nodemailer;
+  #GenerateTemplate = Mailgen;
   constructor(env) {
-    switch (env) {
-      case 'development':
-        this.link = emailConfig.dev
-        break
- 
-      case 'production':
-        this.link = emailConfig.prod
-        break
-    
-      case 'stage':
-        this.link = emailConfig.stage
-        break
-    
-      default:
-        this.link = emailConfig.dev
-        break
-    }
+    this.link =
+      env === 'test'
+        ? emailConfig.test
+        : env === 'production'
+        ? process.env.API_URL
+        : emailConfig.dev;
   }
 
   #createTemplate(verifyToken, name = 'Guest') {
     const mailGenerator = new this.#GenerateTemplate({
       theme: 'cerberus',
-      product: {        
-        name: 'Contacts Book Eko',
-        link: this.link
-      } 
+      product: {
+        name: 'QA Test Service',
+        link: this.link,
+      },
     });
     const template = {
       body: {
         name,
-        intro: 'Welcome to Contacts Book Eko',
+        intro: 'Welcome to QA Test Service',
         action: {
-          instructions: 'For confirm your account click here:',
+          instructions: 'To confirm your account click here:',
           button: {
             color: '#22BC66', // Optional action button color
             text: 'Confirm',
-            link: `${this.link}/auth/verify/${verifyToken}`
+            link: `${this.link}/auth/verify/${verifyToken}`,
           },
-          outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
-        }
-      }
-    }
-    return mailGenerator.generate(template)
+          outro:
+            "Need help, or have questions? Just reply to this email, we'd love to help.",
+        },
+      },
+    };
+    return mailGenerator.generate(template);
   }
-  
 
   async sendEmail(verifyToken, email, name) {
-    const emailBody = this.#createTemplate(verifyToken, name)
+
+    const emailBody = this.#createTemplate(verifyToken, name);
 
     const transporter = this.#sender.createTransport({
       host: EMAIL_SERVICE_HOST,
@@ -75,15 +62,15 @@ class EmailService {
         user: EMAIL_SERVICE_LOGIN, // generated ethereal user
         pass: EMAIL_SERVICE_PASSWORD, // generated ethereal password
       },
-    })
+    });
 
     await transporter.sendMail({
-      from: EMAIL_SERVICE_LOGIN, 
-      to: email, 
-      subject: "Ferify your email ✔", 
-      html: emailBody, 
-    })
- }
+      from: EMAIL_SERVICE_LOGIN,
+      to: email,
+      subject: 'Ferify your email ✔',
+      html: emailBody,
+    });
+  }
 }
 
-module.exports = EmailService
+module.exports = EmailService;

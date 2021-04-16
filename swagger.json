@@ -1,0 +1,842 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "QA Test Service",
+    "description": "This is a server descriptions for QA Test Application by Magnificent Team",
+    "version": "1.0.2"
+  },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "servers": [
+    {
+      "url": "https://qa-test-api-hakaton2021goit.herokuapp.com",
+      "description": "Base URL"
+    },
+    {
+      "url": "http://localhost:5002",
+      "description": "Test URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User"
+    },
+    {
+      "name": "Test"
+    },
+    {
+      "name": "Admin"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Conflict. User with such email is already exist"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logs user into the system",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User is logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "type": "string"
+                        },
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        },
+                        "expires_on": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "status": "success",
+                    "code": 200,
+                    "result": {
+                      "name": "Tolik",
+                      "role": "student",
+                      "token": {
+                        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcyYzJjNmY1N2VlYzM1ZDAwYjk0OGUiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNjE4MTQwMDU1LCJleHAiOjE2MTgxNDE4NTV9.-X9Oms9dvb6kv_ExMrHZCZAIRcAyaFDpsEQoZQNFdm4",
+                        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcyYzJjNmY1N2VlYzM1ZDAwYjk0OGUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTYxODE0MjM1MCwiZXhwIjoxNjIwNzM0MzUwf0.BUMyBKpweOqew9X4EcWTaYpJZUU0sS5UMGBR_XbXJn8",
+                        "expires_on": 1618141850729
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid email / password supplied"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Logs out current logged in user session",
+        "description": "This can only be done by the logged in user.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is logged out"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Renews access token by refresh token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Access token renewed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "expires_on": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "example": {
+                    "status": "success",
+                    "code": 200,
+                    "result": {
+                      "name": "Tolik",
+                      "token": {
+                        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDcyYzJjNmY1N2VlYzM1ZDAwYjk0OGUiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNjE4MTQwMDU1LCJleHAiOjE2MTgxNDE4NTV9.-X9Oms9dvb6kv_ExMrHZCZAIRcAyaFDpsEQoZQNFdm4",
+                        "expires_on": 1618141855729
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "User with such refresh token was not found"
+        },
+        "500": {
+          "description": "Server error"
+        }
+      }
+    },
+    "/api/test-tech": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Get the new series of technical tests",
+        "description": "This can only be done by the logged in user.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tests received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-theory": {
+      "get": {
+        "tags": ["Test"],
+        "summary": "Get the new series of theoretical tests",
+        "description": "This can only be done by the logged in user.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tests received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-tech/result": {
+      "post": {
+        "tags": ["Test"],
+        "summary": "Get correct answers for technical tests",
+        "description": "This can only be done by the logged in user.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestForAnswers"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/test-theory/result": {
+      "post": {
+        "tags": ["Test"],
+        "summary": "Get correct answers for theoretical tests",
+        "description": "This can only be done by the logged in user.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestForAnswers"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Result received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/all/student": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all users with role 'student'",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/all/admin": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all users with role 'admin'",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersListResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/update/:email": {
+      "patch": {
+        "tags": ["Admin"],
+        "summary": "Update role or/and subscription of user",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  },
+                  "subscription": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "role": "admin",
+                  "subscription": "premium"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "List of users received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "subscription": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "name": "Lyolek",
+                    "email": "lyolek@mail.com",
+                    "subscription": "premium",
+                    "role": "admin"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/users/delete/:email": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Remove user from DB",
+        "description": "This can only be done by the logged in user and with admin's role.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token issued to the current user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User was successfully deleted"
+          },
+          "403": {
+            "description": "Forbidden. User is not logged in or his role is not 'admin'"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "ObjectId",
+            "description": "Id generated by MongoDB"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "subscription": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "verify": {
+            "type": "boolean"
+          },
+          "verifyToken": {
+            "type": "string"
+          },
+          "onlyGoogleRegister": {
+            "type": "boolean"
+          },
+          "token": {
+            "type": "object",
+            "properties": {
+              "accessToken": {
+                "type": "string"
+              },
+              "refreshToken": {
+                "type": "string"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "Date"
+          },
+          "updatedAt": {
+            "type": "Date"
+          }
+        }
+      },
+      "Test": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "ObjectId",
+            "description": "Id generated by MongoDB"
+          },
+          "questionId": {
+            "type": "integer"
+          },
+          "question": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": "['apple', 'orange', 'banana']"
+          },
+          "rightAnswer": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterUser": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "Ivan Ivanov",
+          "email": "iivanov@mail.com",
+          "password": "examplepassword"
+        }
+      },
+      "LoginUser": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "email": "iivanov@mail.com",
+          "password": "examplepassword"
+        }
+      },
+      "TestsResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "questionId": {
+              "type": "integer"
+            },
+            "question": {
+              "type": "string"
+            },
+            "answers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "questionId": 1,
+            "question": "Choose citrus fruit",
+            "answers": "['apple', 'orange', 'banana']"
+          },
+          {
+            "questionId": 2,
+            "question": "What number is bigger",
+            "answers": "['1', '2', '3']"
+          }
+        ]
+      },
+      "RequestForAnswers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["questionId", "answer"],
+          "properties": {
+            "questionId": {
+              "type": "integer"
+            },
+            "answer": {
+              "type": "string"
+            }
+          }
+        },
+        "example": [
+          {
+            "questionId": 1,
+            "answer": "orange"
+          },
+          {
+            "questionId": 2,
+            "answer": "2"
+          }
+        ]
+      },
+      "ResultsResponse": {
+        "type": "object",
+        "properties": {
+          "correct": {
+            "type": "integer"
+          },
+          "wrong": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "correct": 10,
+          "wrong": 2
+        }
+      },
+      "UsersListResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "subscription": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "verify": {
+              "type": "boolean"
+            },
+            "onlyGoogleRegister": {
+              "type": "boolean"
+            },
+            "avatar": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "data"
+            },
+            "updatedAt": {
+              "type": "data"
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "Lyolek",
+            "email": "lyolek@mail.com",
+            "subscription": "free",
+            "role": "student",
+            "verify": true,
+            "onlyGoogleRegister": false,
+            "avatar": "https://secure.gravatar.com/3acb559eab691ad82ec5805c5d070123.json?s=250",
+            "createdAt": "2021-04-11T19:38:24.133Z",
+            "updatedAt": "2021-04-13T19:52:30.710Z"
+          },
+          {
+            "name": "Bolek",
+            "email": "bolek@mail.com",
+            "subscription": "pro",
+            "role": "student",
+            "verify": false,
+            "onlyGoogleRegister": true,
+            "avatar": "https://secure.gravatar.com/3acb559eab691ad82ec5805c5d070321.json?s=250",
+            "createdAt": "2021-04-10T19:38:24.133Z",
+            "updatedAt": "2021-04-13T19:52:30.710Z"
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
