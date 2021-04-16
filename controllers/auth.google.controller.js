@@ -18,9 +18,9 @@ const {
 } = process.env;
 
 const BACK_URL = NODE_ENV === 'development' ? API_URL_LOCAL : API_URL;
-const FRONT_URL = NODE_ENV === 'development' ? APP_URL_LOCAL : APP_URL;
+let FRONT_URL = APP_URL;
 
-const googleAuth = async (_req, res, next) => {
+const googleAuth = async (req, res, next) => {
   try {
     const stringifiedParams = queryString.stringify({
       client_id: GOOGLE_CLIENT_ID,
@@ -33,6 +33,10 @@ const googleAuth = async (_req, res, next) => {
       access_type: 'offline',
       prompt: 'consent',
     });
+
+    if (req.headers.referer === `${APP_URL_LOCAL}/`) {
+      FRONT_URL = APP_URL_LOCAL;
+    }
 
     return res.redirect(
       `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`,
